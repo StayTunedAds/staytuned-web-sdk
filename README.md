@@ -1,14 +1,9 @@
 <div align="center">
-  <img width="200" height="200" src="https://storage.staytuned.io/staytuned/logo-staytuned.svg">
-  <br>
-  <br>
+  <img src="https://storage.staytuned.io/staytuned/logo-staytuned.svg">
 </div>
-[![npm][npm]][npm-url]
 
 # Staytuned web SDK
 Staytuned web SDK allows you to become your own audio content platform
-
-
 
 ## Install
 
@@ -20,10 +15,10 @@ npm install --save @staytuned/sdk
 [See full documentation](https://doc.staytuned.io/)
 
 ## Showcases
-|                                    Name                                          |                 Description                |
-| :------------------------------------------------------------------------------: | :----------------------------------------- |
-| [basic-js](https://github.com/StayTunedAds/staytuned-web-sdk/showcases/basic-js) | Basic demo app in script part of an index. |
-| [basic-ts](https://github.com/StayTunedAds/staytuned-web-sdk/showcases/basic-ts) | Basic demo app using a typescript          |
+|                                          Name                                                |                 Description                |
+| :------------------------------------------------------------------------------------------: | :----------------------------------------- |
+| [basic-js](https://github.com/StayTunedAds/staytuned-web-sdk/tree/master/showcases/basic-js) | Basic demo app in script part of an index. |
+| [basic-ts](https://github.com/StayTunedAds/staytuned-web-sdk/tree/master/showcases/basic-ts) | Basic demo app using a typescript.         |
 
 
 ## Licence
