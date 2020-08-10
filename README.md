@@ -3,8 +3,8 @@
 </div>
 <br>
 
-# Staytuned web SDK
-StayTuned Audio Player SDK let you deliver a **complete and flexible audio experience** on your web applications. Users will be able to consume your audio contents on your website while enjoying features they can expect from a top-tier audio application : playlists, play later, playback resuming & history, etc. StayTuned Audio Player SDK let you **build your own web audio player** with a high level of flexibility regarding the features you want to enable.
+# StayTuned Web SDK
+StayTuned Audio Player SDK lets you deliver a **complete and flexible audio experience** on your web applications. Users will be able to consume your audio contents on your website while enjoying features they can expect from a top-tier audio application : playlists, play later, playback resuming & history, etc. StayTuned Audio Player SDK lets you **build your own web audio player** with a high level of flexibility regarding the features you want to enable.
 
 ## Install
 
