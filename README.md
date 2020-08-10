@@ -9,7 +9,7 @@ StayTuned Audio Player SDK lets you deliver a **complete and flexible audio expe
 ## Install
 
 ```bash
-npm install --save @staytuned/sdk
+npm install --save @staytuned-io/sdk
 ```
 
 ## Documentation
