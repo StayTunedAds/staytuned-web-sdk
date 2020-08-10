@@ -1,0 +1,30 @@
+{
+  "name": "basic-ts",
+  "version": "1.0.0",
+  "description": "basic ts demo for staytuned sdk",
+  "author": {
+    "name": "Staytuned",
+    "email": "dev@staytuned.io"
+  },
+  "license": "ISC",
+  "keywords": [
+    "staytuned",
+    "sdk",
+    "demo",
+    "ts"
+  ],
+  "main": "dist/index.ts",
+  "module": "dist/index.esm.js",
+  "browser": "dist/index.iife.js",
+  "types": "dist/types/index.d.ts",
+  "scripts": {
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@staytuned/sdk": "^1.0.0"
+  },
+  "devDependencies": {
+    "rimraf": "^3.0.1",
+    "typescript": "3.9.5"
+  }
+}

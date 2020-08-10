@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Basic demo</title>
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=" />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container py-5">
+      <div class="row mb-5">
+        <div class="col-lg-8 text-white py-4 text-center mx-auto">
+          <h1 class="display-4">Staytuned basic demo</h1>
+          <p class="lead mb-0">Basic example of app with Staytuned SDK</p>
+        </div>
+      </div>
+
+      <div class="p-5 bg-white rounded shadow mb-5">
+        <ul
+          role="tablist"
+          class="nav nav-tabs nav-pills flex-column flex-sm-row text-center bg-light border-0 rounded-nav"
+        >
+          <li class="nav-item flex-sm-fill">
+            <a
+              id="home-tab"
+              data-toggle="tab"
+              href="#player"
+              role="tab"
+              aria-controls="home"
+              aria-selected="true"
+              class="nav-link border-0 text-uppercase font-weight-bold active"
+              >Player</a
+            >
+          </li>
+          <li class="nav-item flex-sm-fill">
+            <a
+              id="contents-tab"
+              data-toggle="tab"
+              href="#contents"
+              role="tab"
+              aria-controls="contents"
+              aria-selected="false"
+              class="nav-link border-0 text-uppercase font-weight-bold"
+              >Podcasts</a
+            >
+          </li>
+          <li class="nav-item flex-sm-fill">
+            <a
+              id="selected-content-tab"
+              data-toggle="tab"
+              href="#selected-content"
+              role="tab"
+              aria-controls="selected-content"
+              aria-selected="false"
+              class="nav-link border-0 text-uppercase font-weight-bold"
+              >Selected podcast</a
+            >
+          </li>
+          <li class="nav-item flex-sm-fill">
+            <a
+              id="sections-tab"
+              data-toggle="tab"
+              href="#sections"
+              role="tab"
+              aria-controls="sections"
+              aria-selected="false"
+              class="nav-link border-0 text-uppercase font-weight-bold"
+              >Sections</a
+            >
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div id="player" role="tabpanel" aria-labelledby="home-tab" class="tab-pane fade px-4 py-5 show active">
+            <p>
+              <span>current-track: </span><strong><span id="player-current-track"></span></strong>
+            </p>
+            <p>
+              <span>current-playlist: </span><strong><span id="player-current-playlist"></span></strong>
+            </p>
+            <p>
+              <span>audio-duration: </span><strong><span id="player-audio-duration"></span></strong>
+            </p>
+            <p>
+              <span>current-time: </span><strong><span id="player-current-time"></span></strong>
+            </p>
+            <p>
+              <span>current-state: </span><strong><span id="player-current-state"></span></strong>
+            </p>
+            <a onclick="prev()" class="btn btn-primary">Prev</a>
+            <a onclick="rewind()" class="btn btn-primary">-30 sec</a>
+            <a onclick="play()" class="btn btn-primary">Play</a>
+            <a onclick="stop()" class="btn btn-primary">Pause</a>
+            <a onclick="fastForward()" class="btn btn-primary">+30 sec</a>
+            <a onclick="next()" class="btn btn-primary">Next</a>
+          </div>
+          <div id="contents" role="tabpanel" aria-labelledby="contents-tab" class="tab-pane fade px-4 py-5"></div>
+          <div
+            id="selected-content"
+            role="tabpanel"
+            aria-labelledby="selected-content-tab"
+            class="tab-pane fade px-4 py-5"
+          ></div>
+          <div id="sections" role="tabpanel" aria-labelledby="sections-tab" class="tab-pane fade px-4 py-5"></div>
+        </div>
+        <!-- End rounded tabs -->
+      </div>
+    </div>
+    <script>
+      // ###################
+      // ##### OBJECTS #####
+      // ###################
+
+      var globalSections = [];
+      var globalContentLightList = [];
+      var globalContent = null;
+
+      // ###############
+      // ##### SDK #####
+      // ###############
+      window.staytunedReady = () => {
+        window.staytunedSDK.init(
+          {
+            appId: '', // YOUR APPID
+            authToken: '', // YOUR AUTHTOKEN
+            opts: {
+              debug: true, // Enable redux dev tools and some extra logs
+              environment: 'dev', // dev || prod
+            },
+          },
+          async () => {
+            console.log('Lets go !');
+            const stSdk = window.staytunedSDK;
+
+            // getSections() return a list of sections
+            let sectionList = await staytunedSDK.STSections.getSections();
+
+            // Get each section content one by one
+            sectionList = await Promise.all(
+              sectionList.map((section) =>
+                staytunedSDK.STSections.getSection({
+                  id: section.id,
+                  aggregateItems: true,
+                }),
+              ),
+            );
+            document.querySelector('#sections').innerHTML = formatSectionList(sectionList);
+
+            // getContents() return a list of light contents
+            const contentLightList = await staytunedSDK.STContents.getContents();
+            document.querySelector('#contents').innerHTML = formatContentLightList(contentLightList);
+
+            // Subscribe to player reactive values
+            staytunedSDK.STPlayer.currentTrack$.subscribe((currentTrack) => {
+              document.querySelector('#player-current-track').innerHTML = currentTrack
+                ? formatTrack(currentTrack)
+                : 'empty';
+            });
+
+            staytunedSDK.STPlayer.currentPlaylist$.subscribe((currentPlaylist) => {
+              document.querySelector('#player-current-playlist').innerHTML = currentPlaylist
+                ? formatPlaylist(currentPlaylist)
+                : 'empty';
+            });
+
+            staytunedSDK.STPlayer.audioDuration$.subscribe((audioDuration) => {
+              document.querySelector('#player-audio-duration').innerHTML = audioDuration;
+            });
+
+            staytunedSDK.STPlayer.currentTime$.subscribe((currentTime) => {
+              document.querySelector('#player-current-time').innerHTML = currentTime;
+            });
+
+            staytunedSDK.STPlayer.currentState$.subscribe((currentState) => {
+              document.querySelector('#player-current-state').innerHTML = currentState;
+            });
+          },
+        );
+      };
+
+      // ###################
+      // ##### ACTIONS #####
+      // ###################
+
+      const playTrack = (trackKey, index) => {
+        if (index >= 0) {
+          return window.staytunedSDK.STPlayer.playAtIndex(index);
+        }
+
+        let foundTrack = null;
+        if (globalContent) {
+          foundTrack = globalContent.trackList.find((t) => t.key === trackKey);
+        }
+
+        if (foundTrack) {
+          window.staytunedSDK.STPlayer.play(foundTrack);
+        }
+      };
+
+      const playContentTrackList = () => {
+        if (globalContent && globalContent.trackList) {
+          window.staytunedSDK.STPlayer.play({
+            name: globalContent.title,
+            trackList: globalContent.trackList,
+          });
+        }
+      };
+
+      const selectContentLight = (contentLightKey) => {
+        window.staytunedSDK.STContents.getContent(contentLightKey).then((content) => {
+          globalContent = content;
+          document.querySelector('#selected-content').innerHTML = formatContent(content);
+        });
+      };
+
+      const play = () => {
+        window.staytunedSDK.STPlayer.play();
+      };
+
+      const stop = () => {
+        window.staytunedSDK.STPlayer.stop();
+      };
+
+      const next = () => {
+        window.staytunedSDK.STPlayer.next();
+      };
+
+      const prev = () => {
+        window.staytunedSDK.STPlayer.next();
+      };
+
+      const seekTo = (time) => {
+        window.staytunedSDK.STPlayer.seekTo(time);
+      };
+
+      const rewind = () => {
+        window.staytunedSDK.STPlayer.rewind();
+      };
+
+      const fastForward = () => {
+        window.staytunedSDK.STPlayer.fastForward();
+      };
+
+      // ##################
+      // ##### FORMAT #####
+      // ##################
+
+      const formatTrack = (track, index) => {
+        return `<span onclick="playTrack('${track.key}', ${index})">${track.title}</span>`;
+      };
+
+      const formatPlaylist = (playlist) => {
+        return `<span>${playlist.name}</span>${formatTrackList(playlist.trackList, true)}`;
+      };
+
+      const formatTrackList = (trackList, isPlaylist = false) => {
+        if (trackList) {
+          return (
+            '<ul class="list-group">' +
+            trackList
+              .map((track, index) => {
+                return `<li class="list-group-item">${formatTrack(track, isPlaylist ? index : -1)}</li>`;
+              })
+              .join('') +
+            '</ul>'
+          );
+        }
+        return '';
+      };
+
+      const formatContentLightList = (contentLightList) => {
+        let ret = '';
+        do {
+          ret +=
+            '<div class="card-group">' +
+            contentLightList
+              .splice(0, 5)
+              .map((contentLight) => {
+                return formatContentLight(contentLight);
+              })
+              .join('') +
+            '</div>';
+        } while (contentLightList.length);
+
+        return ret;
+      };
+
+      const formatContentLight = (contentLight) => {
+        return `<div class="card">
+                  <img src="${contentLight.imgSrc}" class="card-img-top">
+                  <div class="card-body">
+                    <h5 class="card-title">${contentLight.title}</h5>
+                    <p class="card-text">By ${contentLight.author}</p>
+                  </div>
+                  <a onclick="selectContentLight('${contentLight.key}')" class="btn btn-primary">Select podcast</a>
+                </div>`;
+      };
+
+      const formatContent = (content) => {
+        return `<div class="media">
+                  <img src="${content.imgSrc}" class="align-self-start mr-3 media-img">
+                  <div class="media-body">
+                    <h5 class="mt-0">${content.title}</h5>
+                    <p>${content.descriptionText}</p>
+                    <hr/>
+                    ${formatTrackList(content.trackList)}
+                  </div>
+                  <a onclick="playContentTrackList()" class="btn btn-primary">Play tracklist</a>
+                </div>`;
+      };
+
+      const formatSectionList = (sectionList) => {
+        return (
+          '<div class="accordion" id="section-list-accordion">' +
+          sectionList
+            .map((section) => {
+              return formatSection(section);
+            })
+            .join('') +
+          '</div>'
+        );
+      };
+
+      const formatSection = (section) => {
+        return `<div class="card">
+                  <div class="card-header" id="heading${section.id}">
+                    <h2 class="mb-0">
+                      <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapse${
+                        section.id
+                      }" aria-expanded="false" aria-controls="collapse${section.id}">
+                        ${section.name}
+                      </button>
+                    </h2>
+                  </div>
+
+                  <div id="collapse${section.id}" class="collapse" aria-labelledby="heading${
+          section.id
+        }" data-parent="#section-list-accordion">
+                    <div class="card-body">
+                      ${formatContentLightList(section.linkedContents)}
+                    </div>
+                  </div>
+                </div>`;
+      };
+    </script>
+
+    <!-- prod build -->
+    <script src="https://components.staytuned.io/sdk-1.0/staytuned-sdk.js"></script>
+    <script
+      src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+      integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>
