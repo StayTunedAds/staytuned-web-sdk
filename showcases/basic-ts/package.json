@@ -21,7 +21,7 @@
     "build": "tsc"
   },
   "dependencies": {
-    "@staytuned/sdk": "^1.0.0"
+    "@staytuned-io/sdk": "^1.0.1"
   },
   "devDependencies": {
     "rimraf": "^3.0.1",

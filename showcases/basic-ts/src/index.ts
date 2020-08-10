@@ -1,4 +1,4 @@
-import { STSdk } from "@staytuned/sdk/dist/types/models/sdk-object";
+import { STSdk } from "@staytuned-io/sdk/dist/types/models/sdk-object";
 
 declare global {
   interface Window {
