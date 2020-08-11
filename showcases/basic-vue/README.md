@@ -1,4 +1,4 @@
-# basic-ts
+# basic-vue
 
 > Staytuned basic ts project using Vue
 

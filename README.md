@@ -16,10 +16,10 @@ npm install --save @staytuned-io/sdk
 [See full documentation](https://doc.staytuned.io/)
 
 ## Showcases
-|                                          Name                                                |                   Description                  |
-| :------------------------------------------------------------------------------------------: | :--------------------------------------------- |
-| [basic-js](https://github.com/StayTunedAds/staytuned-web-sdk/tree/master/showcases/basic-js) | Basic demo app using script tag in index.html. |
-| [basic-ts](https://github.com/StayTunedAds/staytuned-web-sdk/tree/master/showcases/basic-ts) | Basic demo app using a typescript.             |
+|                                          Name                                                  |                   Description                  |
+| :--------------------------------------------------------------------------------------------: | :--------------------------------------------- |
+| [basic-js](https://github.com/StayTunedAds/staytuned-web-sdk/tree/master/showcases/basic-js)   | Basic demo app using script tag in index.html. |
+| [basic-vue](https://github.com/StayTunedAds/staytuned-web-sdk/tree/master/showcases/basic-vue) | Basic demo app using Vue.                      |
 
 
 ## Licence
