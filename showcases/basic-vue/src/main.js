@@ -8,7 +8,7 @@ import '@staytuned-io/sdk'
 Vue.config.productionTip = false
 
 window.staytunedReady = () => {
-  window.staytunedSDK.init(
+  staytunedSDK.init(
     {
       appId: '', // Your appID
       authToken: '', // Your authToken
@@ -17,8 +17,17 @@ window.staytunedReady = () => {
       }
     },
     async () => {
-      const contentList = await window.staytunedSDK.STContents.getContents()
+      // List sections
+      const sectionList = await staytunedSDK.STSections.getSections()
+      console.log(sectionList);
+
+      // List contents (will retrieve light contents)
+      const contentList = await staytunedSDK.STContents.getContents()
       console.log(contentList)
+
+      // Get one content (get full content)
+      // const content = await staytunedSDK.STContents.getContent('one-content-key')
+      // console.log(content)
     }
   )
 }
